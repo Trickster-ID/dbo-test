@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE tbl_user (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -9,10 +9,20 @@ CREATE TABLE user (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE "order" (
+CREATE TABLE tbl_product (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(255),
+    quantity INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tbl_order (
     order_id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES user(user_id),
-    product_id INTEGER REFERENCES product(product_id),
+    user_id INTEGER REFERENCES tbl_user(user_id),
+    product_id INTEGER REFERENCES tbl_product(product_id),
     quantity INTEGER NOT NULL,
     price NUMERIC(10,2) NOT NULL,
     shipping_address VARCHAR(255),
@@ -20,16 +30,7 @@ CREATE TABLE "order" (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE product (
-    product_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    price NUMERIC(10,2) NOT NULL,
-    description TEXT,
-    image_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-INSERT INTO user (username, password, email, first_name, last_name, is_admin) VALUES
+INSERT INTO tbl_user (username, password, email, first_name, last_name, is_admin) VALUES
 ('user1', 'password1', 'user1@example.com', 'User', 'One', FALSE),
 ('user2', 'password2', 'user2@example.com', 'User', 'Two', FALSE),
 ('user3', 'password3', 'user3@example.com', 'User', 'Three', FALSE),
@@ -41,7 +42,7 @@ INSERT INTO user (username, password, email, first_name, last_name, is_admin) VA
 ('admin4', 'password4', 'admin4@example.com', 'Admin', 'Four', TRUE),
 ('admin5', 'password5', 'admin5@example.com', 'Admin', 'Five', TRUE);
 
-INSERT INTO product (name, price, description, image_url, quantity) VALUES
+INSERT INTO tbl_product (name, price, description, image_url, quantity) VALUES
 ('Keyboard', 59.99, 'Mechanical keyboard with backlighting', 'https://example.com/keyboard.jpg', 10),
 ('Monitor', 199.99, '27-inch 1080p monitor with thin bezels', 'https://example.com/monitor.jpg', 5),
 ('Mouse', 39.99, 'Wireless gaming mouse with high DPI sensor', 'https://example.com/mouse.jpg', 15),
@@ -53,7 +54,7 @@ INSERT INTO product (name, price, description, image_url, quantity) VALUES
 ('Printer', 149.99, 'Inkjet printer with wireless connectivity', 'https://example.com/printer.jpg', 4),
 ('External hard drive', 99.99, '1TB external hard drive with fast transfer speeds', 'https://example.com/hard_drive.jpg', 6);
 
-INSERT INTO "order" (user_id, product_id, quantity, price, shipping_address, status) VALUES
+INSERT INTO tbl_order (user_id, product_id, quantity, price, shipping_address, status) VALUES
 (1, 1, 1, 59.99, 'Jl. Sudirman No.1, Jakarta', 'pending'),
 (2, 2, 1, 199.99, 'Jl. Gatot Subroto No.45, Jakarta', 'pending'),
 (3, 3, 1, 39.99, 'Jl. HR Rasuna Said No.12, Jakarta', 'pending'),
