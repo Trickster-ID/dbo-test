@@ -39,11 +39,6 @@ func (js *jwtService) GenerateToken(username string, cx *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name:    "token",
-	// 	Value:   tokenString,
-	// 	Expires: expirationTime,
-	// })
 	cx.SetCookie("token", tokenString, 3600, "/", "localhost", false, true)
 	return nil
 }
@@ -63,5 +58,5 @@ func (js *jwtService) ValidateToken(tknStr string) (string, error) {
 }
 
 func (js *jwtService) Logout(cx *gin.Context) {
-	cx.SetCookie("token", "", 0, "/", "localhost", false, true)
+	cx.SetCookie("token", "", -1, "/", "localhost", false, true)
 }

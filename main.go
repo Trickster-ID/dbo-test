@@ -11,9 +11,11 @@ import (
 )
 
 var (
-	db       *sql.DB                 = config.SetUpDatabaseConnection()
-	jwtsvc   service.JWTService      = service.NewJWTService()
-	authctrl controller.Authentikasi = controller.NewAuthentikasi(db, jwtsvc)
+	db        *sql.DB                 = config.SetUpDatabaseConnection()
+	jwtsvc    service.JWTService      = service.NewJWTService()
+	authctrl  controller.Authentikasi = controller.NewAuthentikasi(db, jwtsvc)
+	custctrl  controller.Customer     = controller.NewCustomer(db)
+	orderctrl controller.Order        = controller.NewOrder(db)
 )
 
 func main() {
@@ -21,10 +23,26 @@ func main() {
 	r := gin.Default()
 	apiGroup := r.Group("/api")
 	{
-		moduleGroup := apiGroup.Group("/auth")
+		authModuleGroup := apiGroup.Group("/auth")
 		{
-			moduleGroup.GET("/logindata", middleware.AuthJWT(jwtsvc), authctrl.GetLoginData)
-			moduleGroup.POST("/logindata", authctrl.InsertLoginData)
+			authModuleGroup.GET("", middleware.AuthJWT(jwtsvc), authctrl.GetLoginData)
+			authModuleGroup.POST("", authctrl.InsertLoginData)
+		}
+		customerModuleGroup := apiGroup.Group("/customer", middleware.AuthJWT(jwtsvc))
+		{
+			customerModuleGroup.GET("/", custctrl.GetWithPaginate)
+			customerModuleGroup.GET("/:id", custctrl.GetDetail)
+			customerModuleGroup.POST("/", custctrl.Insert)
+			customerModuleGroup.PUT("/:id", custctrl.Update)
+			customerModuleGroup.DELETE("/:id", custctrl.Delete)
+		}
+		orderModuleGroup := apiGroup.Group("/order", middleware.AuthJWT(jwtsvc))
+		{
+			orderModuleGroup.GET("/paginate", orderctrl.GetWithPaginate)
+			orderModuleGroup.GET("/", orderctrl.GetDetail)
+			orderModuleGroup.POST("/", orderctrl.Insert)
+			orderModuleGroup.PUT("/", orderctrl.Update)
+			orderModuleGroup.DELETE("/", orderctrl.Delete)
 		}
 	}
 	r.Run(":8080")
