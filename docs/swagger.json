@@ -1,0 +1,495 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server celler server.",
+        "title": "Swagger DBO Assessment API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Pikri",
+            "email": "pikritaufanaziz@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/auth": {
+            "get": {
+                "description": "Get the detail of user by token",
+                "tags": [
+                    "AUTH"
+                ],
+                "summary": "Get Detail Login Data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "post": {
+                "description": "Post to get jwt token that save in cookies",
+                "tags": [
+                    "AUTH"
+                ],
+                "summary": "Post Login Data",
+                "parameters": [
+                    {
+                        "description": "Payload Body [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Credentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/customer": {
+            "get": {
+                "description": "Get with Paginated, if you just execute without query, by default it will show result page 1 and show 10 datas, you can also add query param for just input int as page will show.",
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get Customers with Paginate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page select by page [page]",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "post": {
+                "description": "Just regular Insert Customer.",
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Insert Customer",
+                "parameters": [
+                    {
+                        "description": "Payload Body [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/customer/{id}": {
+            "get": {
+                "description": "Get Detail of Customer will show plain result from database by input id of customer.",
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get Detail of Customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "request id path",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "put": {
+                "description": "Just regular Update Customer, just change the value before execute, and you can check by get detail api.",
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Insert Customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user_id param to be update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload Body [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Just regular delete data by parsing id as param.",
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Delete Customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "request id path",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/order": {
+            "get": {
+                "description": "Get with Paginated, if you just execute without query, by default it will show result page 1 and show 10 datas, you can also add query param for just input int as page will show.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get Orders with Paginate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page select by page [page]",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "post": {
+                "description": "Just regular Insert order.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Insert Order",
+                "parameters": [
+                    {
+                        "description": "Payload Body [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/order/{id}": {
+            "get": {
+                "description": "Get Detail of order will show joined table by relational talbe data by input id of order_id.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get Detail of Order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "request id path",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "put": {
+                "description": "Just regular Update order, just change the value before execute, and you can check by get detail api.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Insert Order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "order_id param to be update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload Body [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Just regular delete data by parsing id as param.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Delete Order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "request id path",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "helper.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Credentials": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password1"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin1"
+                }
+            }
+        },
+        "model.OrderDto": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number",
+                    "example": 59.99
+                },
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "shipping_address": {
+                    "type": "string",
+                    "example": "Condet no.123 jakarta."
+                },
+                "status": {
+                    "type": "string",
+                    "example": "pending"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "model.UserDto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user6@example.com"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "User"
+                },
+                "is_admin": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Six"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password6"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "user6"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        }
+    }
+}

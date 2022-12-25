@@ -13,6 +13,15 @@ type User struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at" form:"created_at"`
 }
 
+type UserDto struct {
+	Username  string `example:"user6" json:"username" form:"username"`
+	Password  string `example:"password6" json:"password" form:"password"`
+	Email     string `example:"user6@example.com" json:"email" form:"email"`
+	FirstName string `example:"User" json:"first_name" form:"first_name"`
+	LastName  string `example:"Six" json:"last_name" form:"last_name"`
+	IsAdmin   bool   `example:"false" json:"is_admin" form:"is_admin"`
+}
+
 type UserPaginate struct {
 	UserID   int
 	Username string

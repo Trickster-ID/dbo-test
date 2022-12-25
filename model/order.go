@@ -13,6 +13,15 @@ type Order struct {
 	CreatedAt       time.Time `db:"created_at" json:"created_at" form:"created_at"`
 }
 
+type OrderDto struct {
+	UserID          int     `example:"1" json:"user_id" form:"user_id"`
+	ProductID       int     `example:"1" json:"product_id" form:"product_id"`
+	Quantity        int     `example:"1" json:"quantity" form:"quantity"`
+	Price           float64 `example:"59.99" json:"price" form:"price"`
+	ShippingAddress string  `example:"Condet no.123 jakarta." json:"shipping_address" form:"shipping_address"`
+	Status          string  `example:"pending" json:"status" form:"status"`
+}
+
 type OrderPaginate struct {
 	OrderID   int
 	UserID    int

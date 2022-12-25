@@ -29,6 +29,15 @@ func NewOrder(db *sql.DB) Order {
 	}
 }
 
+// @BasePath /api
+
+// @Tags Order
+// @Summary Get Orders with Paginate
+// @Router /order [get]
+// @Description Get with Paginated, if you just execute without query, by default it will show result page 1 and show 10 datas, you can also add query param for just input int as page will show.
+// @Param page query int false "page select by page [page]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *order) GetWithPaginate(cx *gin.Context) {
 	page, err := strconv.Atoi(cx.Query("page"))
 	if err != nil {
@@ -73,13 +82,21 @@ func (db *order) GetWithPaginate(cx *gin.Context) {
 	})
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Order
+// @Summary Get Detail of Order
+// @Router /order/{id} [get]
+// @Description Get Detail of order will show joined table by relational talbe data by input id of order_id.
+// @Param id path int true "request id path"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *order) GetDetail(cx *gin.Context) {
 	idParam := cx.Param("id")
 	var order model.OrderDetail
 	sqlstatement := `SELECT o.order_id, o.quantity, o.price, o.shipping_address, o.status, o.created_at, u.user_id, u.username, u."password", u.email, u.first_name, u.last_name, u.is_admin, u.created_at, p.product_id, p."name", p.price, p.description, p.image_url, p.quantity, p.created_at FROM tbl_order o
 	JOIN tbl_user u ON o.user_id = u.user_id
 	JOIN tbl_product p ON o.product_id = p.product_id
-	WHERE o.product_id = $1 LIMIT 1;`
+	WHERE o.order_id = $1 LIMIT 1;`
 	err := db.conn.QueryRow(sqlstatement, idParam).Scan(&order.OrderID, &order.Quantity, &order.Price, &order.ShippingAddress, &order.Status, &order.CreatedAt, &order.User.UserID, &order.User.Username, &order.User.Password, &order.User.Email, &order.User.FirstName, &order.User.LastName, &order.User.IsAdmin, &order.User.CreatedAt, &order.Product.ProductID, &order.Product.Name, &order.Product.Price, &order.Product.Description, &order.Product.ImageURL, &order.Product.Quantity, &order.Product.CreatedAt)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when execute query", err.Error(), helper.EmptyObject{})
@@ -89,8 +106,16 @@ func (db *order) GetDetail(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(order)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Order
+// @Summary Insert Order
+// @Router /order [post]
+// @Description Just regular Insert order.
+// @Param request body model.OrderDto true "Payload Body [RAW]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *order) Insert(cx *gin.Context) {
-	var order model.Order
+	var order model.OrderDto
 	err := cx.ShouldBind(&order)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when binding", err.Error(), helper.EmptyObject{})
@@ -108,8 +133,17 @@ func (db *order) Insert(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(resid)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Order
+// @Summary Insert Order
+// @Router /order/{id} [put]
+// @Description Just regular Update order, just change the value before execute, and you can check by get detail api.
+// @Param id path int true "order_id param to be update"
+// @Param request body model.OrderDto true "Payload Body [RAW]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *order) Update(cx *gin.Context) {
-	var existingData model.Order
+	var existingData model.OrderDto
 	idParam := cx.Param("id")
 	sqlstatement := `SELECT user_id, product_id, quantity, price, shipping_address, status FROM tbl_order WHERE order_id = $1 LIMIT 1;`
 	err := db.conn.QueryRow(sqlstatement, idParam).Scan(&existingData.UserID, &existingData.ProductID, &existingData.Quantity, &existingData.Price, &existingData.ShippingAddress, &existingData.Status)
@@ -118,7 +152,7 @@ func (db *order) Update(cx *gin.Context) {
 		cx.AbortWithStatusJSON(http.StatusBadRequest, response)
 		return
 	}
-	var newData model.Order
+	var newData model.OrderDto
 	errSB := cx.ShouldBind(&newData)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when binding", errSB.Error(), helper.EmptyObject{})
@@ -152,6 +186,14 @@ func (db *order) Update(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(idParam)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Order
+// @Summary Delete Order
+// @Router /order/{id} [delete]
+// @Description Just regular delete data by parsing id as param.
+// @Param id path int true "request id path"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *order) Delete(cx *gin.Context) {
 	idParam := cx.Param("id")
 	sqlstatementupdate := `DELETE FROM tbl_order WHERE order_id = $1;`

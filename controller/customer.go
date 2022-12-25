@@ -29,6 +29,15 @@ func NewCustomer(db *sql.DB) Customer {
 	}
 }
 
+// @BasePath /api
+
+// @Tags Customer
+// @Summary Get Customers with Paginate
+// @Router /customer [get]
+// @Description Get with Paginated, if you just execute without query, by default it will show result page 1 and show 10 datas, you can also add query param for just input int as page will show.
+// @Param page query int false "page select by page [page]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *customer) GetWithPaginate(cx *gin.Context) {
 	page, err := strconv.Atoi(cx.Query("page"))
 	if err != nil {
@@ -73,6 +82,14 @@ func (db *customer) GetWithPaginate(cx *gin.Context) {
 	})
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Customer
+// @Summary Get Detail of Customer
+// @Router /customer/{id} [get]
+// @Description Get Detail of Customer will show plain result from database by input id of customer.
+// @Param id path int true "request id path"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *customer) GetDetail(cx *gin.Context) {
 	idParam := cx.Param("id")
 	var user model.User
@@ -86,8 +103,16 @@ func (db *customer) GetDetail(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(user)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Customer
+// @Summary Insert Customer
+// @Router /customer [post]
+// @Description Just regular Insert Customer.
+// @Param request body model.UserDto true "Payload Body [RAW]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *customer) Insert(cx *gin.Context) {
-	var user model.User
+	var user model.UserDto
 	err := cx.ShouldBind(&user)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when binding", err.Error(), helper.EmptyObject{})
@@ -105,8 +130,17 @@ func (db *customer) Insert(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(resid)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Customer
+// @Summary Insert Customer
+// @Router /customer/{id} [put]
+// @Description Just regular Update Customer, just change the value before execute, and you can check by get detail api.
+// @Param id path int true "user_id param to be update"
+// @Param request body model.UserDto true "Payload Body [RAW]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *customer) Update(cx *gin.Context) {
-	var existingData model.User
+	var existingData model.UserDto
 	idParam := cx.Param("id")
 	sqlstatement := `SELECT username, "password", email, first_name, last_name, is_admin FROM tbl_user WHERE user_id = $1 LIMIT 1;`
 	err := db.conn.QueryRow(sqlstatement, idParam).Scan(&existingData.Username, &existingData.Password, &existingData.Email, &existingData.FirstName, &existingData.LastName, &existingData.IsAdmin)
@@ -115,7 +149,7 @@ func (db *customer) Update(cx *gin.Context) {
 		cx.AbortWithStatusJSON(http.StatusBadRequest, response)
 		return
 	}
-	var newData model.User
+	var newData model.UserDto
 	errSB := cx.ShouldBind(&newData)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when binding", errSB.Error(), helper.EmptyObject{})
@@ -151,6 +185,14 @@ func (db *customer) Update(cx *gin.Context) {
 	responseSuccess := helper.BuildResponse(idParam)
 	cx.JSON(http.StatusOK, responseSuccess)
 }
+
+// @Tags Customer
+// @Summary Delete Customer
+// @Router /customer/{id} [delete]
+// @Description Just regular delete data by parsing id as param.
+// @Param id path int true "request id path"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (db *customer) Delete(cx *gin.Context) {
 	idParam := cx.Param("id")
 	sqlstatementupdate := `DELETE FROM tbl_user WHERE user_id = $1;`

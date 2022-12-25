@@ -11,8 +11,8 @@ import (
 )
 
 type Authentikasi interface {
-	GetLoginData(cx *gin.Context)
 	InsertLoginData(cx *gin.Context)
+	GetLoginData(cx *gin.Context)
 }
 
 type authentikasi struct {
@@ -27,39 +27,16 @@ func NewAuthentikasi(db *sql.DB, jwtSvc service.JWTService) Authentikasi {
 	}
 }
 
-func (auth *authentikasi) GetLoginData(cx *gin.Context) {
-	token, err := cx.Cookie("token")
-	if err != nil {
-		response := helper.BuildErrorResponse("Fail when get cookie", err.Error(), helper.EmptyObject{})
-		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
-		return
-	}
-	username, err := auth.jwtsvc.ValidateToken(token)
-	if err != nil {
-		response := helper.BuildErrorResponse("Fail when validate token", err.Error(), helper.EmptyObject{})
-		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
-		return
-	}
-	sqlStatement := `SELECT * FROM tbl_user WHERE username = $1 LIMIT 1;`
-	rows, err := auth.con.Query(sqlStatement, username)
-	if err != nil {
-		response := helper.BuildErrorResponse("Fail when execute db", err.Error(), helper.EmptyObject{})
-		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
-		return
-	}
-	var r model.User
-	for rows.Next() {
-		err := rows.Scan(&r.UserID, &r.Username, &r.Password, &r.Email, &r.FirstName, &r.LastName, &r.IsAdmin, &r.CreatedAt)
-		if err != nil {
-			response := helper.BuildErrorResponse("Fail when scan rows", err.Error(), helper.EmptyObject{})
-			cx.AbortWithStatusJSON(http.StatusBadRequest, response)
-			return
-		}
-	}
-	responseSuccess := helper.BuildResponse(r)
-	cx.JSON(http.StatusOK, responseSuccess)
-}
+// @BasePath /api
 
+// Get Detail Login Data
+// @Tags AUTH
+// @Summary Post Login Data
+// @Router /auth [post]
+// @Description Post to get jwt token that save in cookies
+// @Param request body model.Credentials true "Payload Body [RAW]"
+// @Success 200 {array} helper.Response
+// @Failure 400
 func (auth *authentikasi) InsertLoginData(cx *gin.Context) {
 	var creds model.Credentials
 	err := cx.ShouldBind(&creds)
@@ -92,5 +69,45 @@ func (auth *authentikasi) InsertLoginData(cx *gin.Context) {
 		return
 	}
 	responseSuccess := helper.BuildResponse("")
+	cx.JSON(http.StatusOK, responseSuccess)
+}
+
+// Get Detail Login Data
+// @Tags AUTH
+// @Summary Get Detail Login Data
+// @Router /auth [get]
+// @Description Get the detail of user by token
+// @Success 200 {array} helper.Response
+// @Failure 400
+func (auth *authentikasi) GetLoginData(cx *gin.Context) {
+	token, err := cx.Cookie("token")
+	if err != nil {
+		response := helper.BuildErrorResponse("Fail when get cookie", err.Error(), helper.EmptyObject{})
+		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+		return
+	}
+	username, err := auth.jwtsvc.ValidateToken(token)
+	if err != nil {
+		response := helper.BuildErrorResponse("Fail when validate token", err.Error(), helper.EmptyObject{})
+		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+		return
+	}
+	sqlStatement := `SELECT * FROM tbl_user WHERE username = $1 LIMIT 1;`
+	rows, err := auth.con.Query(sqlStatement, username)
+	if err != nil {
+		response := helper.BuildErrorResponse("Fail when execute db", err.Error(), helper.EmptyObject{})
+		cx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+		return
+	}
+	var r model.User
+	for rows.Next() {
+		err := rows.Scan(&r.UserID, &r.Username, &r.Password, &r.Email, &r.FirstName, &r.LastName, &r.IsAdmin, &r.CreatedAt)
+		if err != nil {
+			response := helper.BuildErrorResponse("Fail when scan rows", err.Error(), helper.EmptyObject{})
+			cx.AbortWithStatusJSON(http.StatusBadRequest, response)
+			return
+		}
+	}
+	responseSuccess := helper.BuildResponse(r)
 	cx.JSON(http.StatusOK, responseSuccess)
 }

@@ -1,0 +1,339 @@
+basePath: /api
+definitions:
+  helper.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  model.Credentials:
+    properties:
+      password:
+        example: password1
+        type: string
+      username:
+        example: admin1
+        type: string
+    type: object
+  model.OrderDto:
+    properties:
+      price:
+        example: 59.99
+        type: number
+      product_id:
+        example: 1
+        type: integer
+      quantity:
+        example: 1
+        type: integer
+      shipping_address:
+        example: Condet no.123 jakarta.
+        type: string
+      status:
+        example: pending
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  model.UserDto:
+    properties:
+      email:
+        example: user6@example.com
+        type: string
+      first_name:
+        example: User
+        type: string
+      is_admin:
+        example: false
+        type: boolean
+      last_name:
+        example: Six
+        type: string
+      password:
+        example: password6
+        type: string
+      username:
+        example: user6
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: pikritaufanaziz@gmail.com
+    name: Pikri
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger DBO Assessment API
+  version: "1.0"
+paths:
+  /auth:
+    get:
+      description: Get the detail of user by token
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Get Detail Login Data
+      tags:
+      - AUTH
+    post:
+      description: Post to get jwt token that save in cookies
+      parameters:
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Credentials'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Post Login Data
+      tags:
+      - AUTH
+  /customer:
+    get:
+      description: Get with Paginated, if you just execute without query, by default
+        it will show result page 1 and show 10 datas, you can also add query param
+        for just input int as page will show.
+      parameters:
+      - description: page select by page [page]
+        in: query
+        name: page
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Get Customers with Paginate
+      tags:
+      - Customer
+    post:
+      description: Just regular Insert Customer.
+      parameters:
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserDto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Insert Customer
+      tags:
+      - Customer
+  /customer/{id}:
+    delete:
+      description: Just regular delete data by parsing id as param.
+      parameters:
+      - description: request id path
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Delete Customer
+      tags:
+      - Customer
+    get:
+      description: Get Detail of Customer will show plain result from database by
+        input id of customer.
+      parameters:
+      - description: request id path
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Get Detail of Customer
+      tags:
+      - Customer
+    put:
+      description: Just regular Update Customer, just change the value before execute,
+        and you can check by get detail api.
+      parameters:
+      - description: user_id param to be update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserDto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Insert Customer
+      tags:
+      - Customer
+  /order:
+    get:
+      description: Get with Paginated, if you just execute without query, by default
+        it will show result page 1 and show 10 datas, you can also add query param
+        for just input int as page will show.
+      parameters:
+      - description: page select by page [page]
+        in: query
+        name: page
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Get Orders with Paginate
+      tags:
+      - Order
+    post:
+      description: Just regular Insert order.
+      parameters:
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderDto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Insert Order
+      tags:
+      - Order
+  /order/{id}:
+    delete:
+      description: Just regular delete data by parsing id as param.
+      parameters:
+      - description: request id path
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Delete Order
+      tags:
+      - Order
+    get:
+      description: Get Detail of order will show joined table by relational talbe
+        data by input id of order_id.
+      parameters:
+      - description: request id path
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Get Detail of Order
+      tags:
+      - Order
+    put:
+      description: Just regular Update order, just change the value before execute,
+        and you can check by get detail api.
+      parameters:
+      - description: order_id param to be update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderDto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Insert Order
+      tags:
+      - Order
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
