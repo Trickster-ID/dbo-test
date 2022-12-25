@@ -38,11 +38,11 @@ func main() {
 		}
 		orderModuleGroup := apiGroup.Group("/order", middleware.AuthJWT(jwtsvc))
 		{
-			orderModuleGroup.GET("/paginate", orderctrl.GetWithPaginate)
-			orderModuleGroup.GET("/", orderctrl.GetDetail)
+			orderModuleGroup.GET("/", orderctrl.GetWithPaginate)
+			orderModuleGroup.GET("/:id", orderctrl.GetDetail)
 			orderModuleGroup.POST("/", orderctrl.Insert)
-			orderModuleGroup.PUT("/", orderctrl.Update)
-			orderModuleGroup.DELETE("/", orderctrl.Delete)
+			orderModuleGroup.PUT("/:id", orderctrl.Update)
+			orderModuleGroup.DELETE("/:id", orderctrl.Delete)
 		}
 	}
 	r.Run(":8080")

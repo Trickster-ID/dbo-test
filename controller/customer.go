@@ -42,9 +42,10 @@ func (db *customer) GetWithPaginate(cx *gin.Context) {
 		return
 	}
 	perPage := 10
+	offset := (page - 1) * perPage
 	totalPages := int(math.Ceil(float64(totalCount) / float64(perPage)))
 	var users []model.UserPaginate
-	rows, err := db.conn.Query(`SELECT user_id, username, first_name || ' ' || last_name as fullname FROM tbl_user LIMIT $1;`, perPage)
+	rows, err := db.conn.Query(`SELECT user_id, username, first_name || ' ' || last_name as fullname FROM tbl_user LIMIT $1 OFFSET $2;`, perPage, offset)
 	if err != nil {
 		response := helper.BuildErrorResponse("Fail when execute query", err.Error(), helper.EmptyObject{})
 		cx.AbortWithStatusJSON(http.StatusBadRequest, response)

@@ -13,17 +13,8 @@ type User struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at" form:"created_at"`
 }
 
-// type UserInsertDto
-
 type UserPaginate struct {
 	UserID   int
 	Username string
 	Fullname string
-}
-
-type Pagination struct {
-	CurrentPage int
-	PerPage     int
-	TotalCount  int
-	TotalPages  int
 }

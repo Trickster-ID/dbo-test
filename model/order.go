@@ -12,3 +12,20 @@ type Order struct {
 	Status          string    `db:"status" json:"status" form:"status"`
 	CreatedAt       time.Time `db:"created_at" json:"created_at" form:"created_at"`
 }
+
+type OrderPaginate struct {
+	OrderID   int
+	UserID    int
+	ProductID int
+}
+
+type OrderDetail struct {
+	OrderID         int
+	User            User
+	Product         Product
+	Quantity        int
+	Price           float64
+	ShippingAddress string
+	Status          string
+	CreatedAt       time.Time
+}
